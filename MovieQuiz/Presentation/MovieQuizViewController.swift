@@ -102,7 +102,7 @@ final class MovieQuizViewController: UIViewController {
         
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
-            self.imageView.layer.borderColor = UIColor.ypBlack.cgColor
+            self.imageView.layer.borderColor = UIColor.clear.cgColor
             self.showNextQuestionOrResults()
             self.yesButton.isEnabled = true
             self.noButton.isEnabled = true
@@ -151,6 +151,10 @@ final class MovieQuizViewController: UIViewController {
         let currentQuestion = questions[currentQuestionIndex]
         
         show(quiz: convert(model: currentQuestion))
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     struct QuizQuestion {
