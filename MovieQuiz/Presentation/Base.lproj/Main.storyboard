@@ -110,17 +110,23 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="aFN-9T-rfD">
+                                <rect key="frame" x="185" y="412" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="74m-YG-EEu" secondAttribute="trailing" constant="20" id="HoI-G2-gIg"/>
+                            <constraint firstItem="aFN-9T-rfD" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="JHq-E9-f7I"/>
                             <constraint firstItem="74m-YG-EEu" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="WMK-7M-pyb"/>
+                            <constraint firstItem="aFN-9T-rfD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bEB-RA-t0I"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="74m-YG-EEu" secondAttribute="bottom" id="kMq-xp-o25"/>
                             <constraint firstItem="74m-YG-EEu" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="nVP-nA-xun"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="aFN-9T-rfD" id="iVA-po-upw"/>
                         <outlet property="counterLabel" destination="568-rs-dJm" id="xBb-nM-2fg"/>
                         <outlet property="imageView" destination="dcR-lC-P4W" id="7CF-Za-95i"/>
                         <outlet property="noButton" destination="vfK-x5-Ihn" id="Bet-eg-pfd"/>
@@ -130,7 +136,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-55.072463768115945" y="55.434782608695656"/>
+            <point key="canvasLocation" x="-55.38461538461538" y="54.739336492890992"/>
         </scene>
     </scenes>
     <resources>

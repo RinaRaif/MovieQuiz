@@ -7,6 +7,8 @@
 
 import Foundation
 
+// "Показ Рекорда"
+
 struct GameRecord: Codable {
     let correct: Int
     let total: Int
