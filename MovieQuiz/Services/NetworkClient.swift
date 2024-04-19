@@ -8,7 +8,7 @@
 import Foundation
 
 /// Отвечает за загрузку данных по URL
-   
+
 //MARK: - NetworkRouting
 protocol NetworkRouting {
     func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void)

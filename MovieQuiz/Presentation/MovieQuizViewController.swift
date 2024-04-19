@@ -1,7 +1,20 @@
 import UIKit
 
+//MARK: - MovieQuizViewControllerProtocol
+protocol MovieQuizViewControllerProtocol: AnyObject {
+    func show(quiz step: QuizStepViewModel)
+    func show(quiz result: QuizResultsViewModel)
+    func highlightImageBorder(isCorrectAnswer: Bool)
+    func showLoadingIndicator()
+    func hideLoadingIndicator()
+    func showNetworkError(message: String)
+}
+
 //MARK: - MovieQuizViewController
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
+    
+    // MARK: - Properties
+    var alertPresenter: AlertPresenter?
     
     // MARK: - IBOutlet
     @IBOutlet private weak var activityIndicatorView: UIActivityIndicatorView!
@@ -24,6 +37,7 @@ final class MovieQuizViewController: UIViewController {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
         presenter = MovieQuizPresenter(viewController: self)
+        alertPresenter = AlertPresenter(viewController: self)
     }
     
     // MARK: - Actions
@@ -55,12 +69,10 @@ final class MovieQuizViewController: UIViewController {
         
         let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
             guard let self = self else { return }
-            
             self.presenter.restartGame()
         }
         
         alert.addAction(action)
-        
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -91,9 +103,10 @@ final class MovieQuizViewController: UIViewController {
                                    style: .default) { [weak self] _ in
             guard let self = self else { return }
             
-            self.presenter.restartGame()
+            self.presenter.loadingError()
         }
         
         alert.addAction(action)
+        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
     }
 }
