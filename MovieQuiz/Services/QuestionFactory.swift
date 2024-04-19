@@ -6,18 +6,23 @@
 //
 
 import Foundation
+import UIKit
 
+//MARK: - QuestionFactory
 final class QuestionFactory: QuestionFactoryProtocol {
     
+    //MARK: - Private properties
     private let moviesLoader: MoviesLoading
     private weak var delegate: QuestionFactoryDelegate?
     private var movies: [MostPopularMovie] = []
     
+    //MARK: - Initialisers
     init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?) {
         self.moviesLoader = moviesLoader
         self.delegate = delegate
     }
     
+    //MARK: - Public methods
     func loadData() {
         moviesLoader.loadMovies { [weak self] result in
             DispatchQueue.main.async {
@@ -34,6 +39,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
     }
     
     func requestNextQuestion() {
+        
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             let index = (0..<self.movies.count).randomElement() ?? 0
@@ -44,37 +50,53 @@ final class QuestionFactory: QuestionFactoryProtocol {
             
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
+                
+                let randomQuestion = ["больше", "меньше"].randomElement() ?? ""
+                
+                let rating = Float(movie.rating) ?? 0
+                let randomRating = Float(round(10 * Float.random(in: 4.1...9.9)) / 10)
+                let text = "Рейтинг этого фильма \(randomQuestion) чем \(randomRating)?"
+                
+                let correctAnswer: Bool
+                
+                switch randomQuestion {
+                    case "больше":
+                        correctAnswer = rating > randomRating
+                    case "меньше":
+                        correctAnswer = rating < randomRating
+                    default:
+                        correctAnswer = false
+                }
+                let question = QuizQuestion(image: imageData,
+                                            text: text,
+                                            correctAnswer: correctAnswer)
+                
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.didReceiveNextQuestion(question: question)
+                }
             } catch {
                 print("Failed to load image")
-            }
-            
-            let randomQuestion = ["больше", "меньше"].randomElement() ?? ""
-            
-            let rating = Float(movie.rating) ?? 0
-            let randomRating = Float(round(10 * Float.random(in: 4.1...9.9)) / 10)
-            let text = "Рейтинг этого фильма \(randomQuestion) чем \(randomRating)?"
-            
-            let correctAnswer: Bool
-            
-            switch randomQuestion {
-                case "больше":
-                    correctAnswer = rating > randomRating
-                case "меньше":
-                    correctAnswer = rating < randomRating
-                default:
-                    correctAnswer = false
-            }
-            let question = QuizQuestion(image: imageData,
-                                        text: text,
-                                        correctAnswer: correctAnswer)
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.delegate?.didReceiveNextQuestion(question: question)
+                DispatchQueue.main.async {
+                    //                    self.delegate?.didFailedToLoadImage(with: error)
+                    
+                    let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось загрузить изображение", preferredStyle: .alert)
+                    
+                    let action = UIAlertAction(
+                        title: "Попробовать ещё раз",
+                        style: .default) { [weak self] _ in
+                            guard let self = self else { return }
+                            loadData()
+                        }
+                    alert.addAction(action)
+                    
+                    UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
+                }
             }
         }
     }
 }
+
 //    private let questions: [QuizQuestion] = [
 //        QuizQuestion(
 //            image: "The Godfather",

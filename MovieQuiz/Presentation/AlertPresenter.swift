@@ -8,30 +8,29 @@
 
 import UIKit
 
-final class AlertPresenter {
+//MARK: - AlertPresenter
+final class AlertPresenter: AlertPresenterProtocol {
     
+    // MARK: - Private properties
     private weak var viewController: UIViewController?
     
+    //MARK: - Inizializers
     init(viewController: UIViewController?) {
         self.viewController = viewController
     }
     
+    // MARK: - Methods
     func show(alertModel: AlertModel) {
         let alert = UIAlertController(
             title: alertModel.title,
             message: alertModel.message,
-            preferredStyle: .alert
-        )
+            preferredStyle: .alert)
         
-        let action = UIAlertAction(
-            title: alertModel.buttonText,
-            style: .default) { _ in
-                alertModel.completion?()
-            }
+        let action = UIAlertAction(title: alertModel.buttonText, style: .default) { _ in
+            alertModel.completion?()
+        }
         
         alert.addAction(action)
-        
-        self.viewController?.present(alert, animated: true, completion: nil)
+        viewController?.present(alert, animated: true, completion: nil)
     }
 }
-

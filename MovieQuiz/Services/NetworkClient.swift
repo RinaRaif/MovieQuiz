@@ -9,26 +9,33 @@ import Foundation
 
 /// Отвечает за загрузку данных по URL
 
-struct NetworkClient {
+//MARK: - NetworkRouting
+protocol NetworkRouting {
+    func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void)
+}
+
+//MARK: - NetworkClient
+struct NetworkClient: NetworkRouting {
     
+    //MARK: - Private properties
     private enum NetworkError: Error {
         case codeError
     }
     
+    //MARK: - Methods
     func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
         let request = URLRequest(url: url)
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { data, responce, error in
             if let error = error {
                 handler(.failure(error))
                 return
             }
             
-            if let response = response as? HTTPURLResponse,
-               response.statusCode < 200 || response.statusCode >= 300 {
+            if let responce = responce as? HTTPURLResponse,
+               responce.statusCode < 200 || responce.statusCode >= 300 {
                 handler(.failure(NetworkError.codeError))
                 return
-                
             }
             
             guard let data = data else { return }
