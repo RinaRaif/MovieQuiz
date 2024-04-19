@@ -7,17 +7,21 @@
 
 import Foundation
 
+//MARK: - QuestionFactory
 final class QuestionFactory: QuestionFactoryProtocol {
     
+    //MARK: - Private properties
     private let moviesLoader: MoviesLoading
     private weak var delegate: QuestionFactoryDelegate?
     private var movies: [MostPopularMovie] = []
     
+    //MARK: - Initialisers
     init(moviesLoader: MoviesLoading, delegate: QuestionFactoryDelegate?) {
         self.moviesLoader = moviesLoader
         self.delegate = delegate
     }
     
+    //MARK: - Public methods
     func loadData() {
         moviesLoader.loadMovies { [weak self] result in
             DispatchQueue.main.async {

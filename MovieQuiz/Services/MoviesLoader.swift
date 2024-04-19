@@ -7,13 +7,20 @@
 
 import Foundation
 
+//MARK: - MoviesLoading
 protocol MoviesLoading {
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void)
 }
 
+//MARK: - MoviesLoader
 struct MoviesLoader: MoviesLoading {
+    
     // MARK: - NetworkClient
-    private let networkClient = NetworkClient()
+    private let networkClient: NetworkRouting
+    //MARK: - Initialisers
+    init(networkClient: NetworkRouting = NetworkClient()) {
+        self.networkClient = networkClient
+    }
     
     // MARK: - URL
     private var mostPopularMoviesUrl: URL {
@@ -25,17 +32,16 @@ struct MoviesLoader: MoviesLoading {
     
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {
         networkClient.fetch(url: mostPopularMoviesUrl) { result in
-            do {
-                let data = try result.get()
-                let decodedData = try JSONDecoder().decode(MostPopularMovies.self, from: data)
-                if decodedData.errorMessage.isEmpty {
-                    handler(.success(decodedData))
-                } else {
-                    let error = NSError(domain: decodedData.errorMessage, code: 0)
+            switch result {
+                case .success(let data):
+                    do {
+                        let mostPopularMovies = try JSONDecoder().decode(MostPopularMovies.self, from: data)
+                        handler(.success(mostPopularMovies))
+                    } catch {
+                        handler(.failure(error))
+                    }
+                case .failure(let error):
                     handler(.failure(error))
-                }
-            } catch let error {
-                handler(.failure(error))
             }
         }
     }
